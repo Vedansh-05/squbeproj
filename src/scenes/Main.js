@@ -395,35 +395,48 @@ class MainScene extends Phaser.Scene {
       onComplete: () => { light.destroy(); }
     });
   }
-  
   gameOver() {
-    // Display a game over message
-    let gameOverText = this.add.text(this.cameras.main.scrollX + 400, 300, 'GAME OVER', { 
-      fontSize: '64px', 
-      fill: '#ff0000',
-      fontStyle: 'bold' 
-    }).setOrigin(0.5);
+    console.log("Game Over! Transitioning to GameOverScene...");
     
-    // Show final score
-    this.add.text(this.cameras.main.scrollX + 400, 375, `Final Score: ${Math.floor(this.score)}`, { 
-      fontSize: '32px', 
-      fill: '#ffffff' 
-    }).setOrigin(0.5);
-    
-    // Add a restart button
-    let restartButton = this.add.text(this.cameras.main.scrollX + 400, 450, 'RESTART', { 
-      fontSize: '32px', 
-      fill: '#ffffff',
-      backgroundColor: '#000000',
-      padding: { x: 20, y: 10 }
-    }).setOrigin(0.5)
-    .setInteractive({ useHandCursor: true })
-    .on('pointerdown', () => {
-      this.scene.restart();
+    // Stop player movement
+    this.player.setVelocity(0);
+    this.player.setTint(0xff0000); // Optional: Flash red to indicate death
+  
+    // Short delay before switching scenes
+    this.time.delayedCall(1000, () => {
+      this.scene.start("GameOverScene", { score: Math.floor(this.score) });
     });
-    
-    // Pause the game
-    this.physics.pause();
-    this.tweens.pauseAll();
   }
+  
+  
+  // gameOver() {
+  //   // Display a game over message
+  //   let gameOverText = this.add.text(this.cameras.main.scrollX + 400, 300, 'GAME OVER', { 
+  //     fontSize: '64px', 
+  //     fill: '#ff0000',
+  //     fontStyle: 'bold' 
+  //   }).setOrigin(0.5);
+    
+  //   // Show final score
+  //   this.add.text(this.cameras.main.scrollX + 400, 375, `Final Score: ${Math.floor(this.score)}`, { 
+  //     fontSize: '32px', 
+  //     fill: '#ffffff' 
+  //   }).setOrigin(0.5);
+    
+  //   // Add a restart button
+  //   let restartButton = this.add.text(this.cameras.main.scrollX + 400, 450, 'RESTART', { 
+  //     fontSize: '32px', 
+  //     fill: '#ffffff',
+  //     backgroundColor: '#000000',
+  //     padding: { x: 20, y: 10 }
+  //   }).setOrigin(0.5)
+  //   .setInteractive({ useHandCursor: true })
+  //   .on('pointerdown', () => {
+  //     this.scene.restart();
+  //   });
+    
+  //   // Pause the game
+  //   this.physics.pause();
+  //   this.tweens.pauseAll();
+  // }
 }
