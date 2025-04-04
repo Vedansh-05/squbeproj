@@ -160,36 +160,39 @@ class MainScene extends Phaser.Scene {
   }
   
   update(time, delta) {
-    // Increase score over time.
-    this.score += delta * 0.01;
-    this.scoreText.setText('Score: ' + Math.floor(this.score));
-    
-    // Update distance (converted to meters)
+    // Calculate distance in meters
     const distanceInMeters = (this.player.x / 100).toFixed(1);
+
+    // Increase score based on distance
+    this.score = Math.floor(distanceInMeters * 2); // 10 points per meter
+
+    // Update UI elements
+    this.scoreText.setText('Score: ' + this.score);
     this.distanceText.setText(`DISTANCE\n${distanceInMeters}m`);
     this.distanceText.x = this.cameras.main.scrollX + 770;
-    
+
     // Handle player controls
     this.handlePlayerControls();
-    
+
     // Remove off-screen objects
     this.cleanupOffscreenObjects();
-    
+
     // Check if the player is "hiding" on a platform.
     this.checkPlayerHiding();
-    
+
     // If the player is in the air, roll the cube.
     this.applyPlayerRoll(delta);
-    
+
     // Keep the controls text with the camera
     this.controlsText.x = this.cameras.main.scrollX + 400;
-    
+
     // Generate more platforms as the player moves right
     this.generateMorePlatforms();
-    
+
     // Update floor detector position to follow camera
     this.floorDetector.x = this.cameras.main.scrollX;
-  }
+}
+
   
   handlePlayerControls() {
     // Handle player movement with WASD or arrow keys
@@ -395,17 +398,71 @@ class MainScene extends Phaser.Scene {
       onComplete: () => { light.destroy(); }
     });
   }
-  gameOver() {
-    console.log("Game Over! Transitioning to GameOverScene...");
+  // gameOver() {
+  //   console.log("Game Over! Transitioning to GameOverScene...");
     
-    // Stop player movement
-    this.player.setVelocity(0);
-    this.player.setTint(0xff0000); // Optional: Flash red to indicate death
+  //   // Stop player movement
+  //   this.player.setVelocity(0);
+  //   this.player.setTint(0xff0000); // Optional: Flash red to indicate death
   
-    // Short delay before switching scenes
-    this.time.delayedCall(1000, () => {
-      this.scene.start("GameOverScene", { score: Math.floor(this.score) });
-    });
+  //   // Short delay before switching scenes
+  //   this.time.delayedCall(1000, () => {
+  //     this.scene.start("GameOverScene", { score: Math.floor(this.score) });
+  //   });
+  // }
+  gameOver() {
+    // Stop all timers and events
+    this.time.removeAllEvents(); // Stops all active timers
+    this.physics.pause(); // Pause all physics bodies
+    this.input.keyboard.enabled = false; // Disable player controls
+  
+    // Freeze player
+    this.player.setTint(0xff0000);
+    this.player.setVelocity(0, 0);
+    this.player.body.allowGravity = false;
+  
+    // Center elements
+    const { width, height } = this.cameras.main;
+    const centerX = this.cameras.main.scrollX + width / 2;
+    const centerY = height / 2;
+  
+    // Box dimensions
+    const boxWidth = 400; // Increased width
+    const boxHeight = 220;
+    const box = this.add.graphics();
+    box.fillStyle(0x000000, 0.7); // Black box with 70% opacity
+    box.fillRoundedRect(centerX - boxWidth / 2, centerY - boxHeight / 2, boxWidth, boxHeight, 20);
+  
+    // Game Over Text
+    this.add.text(centerX, centerY - 70, 'Game Over', {
+      fontSize: '42px',
+      fill: '#ff0000',
+      fontFamily: 'Arial',
+      fontWeight: 'bold',
+    }).setOrigin(0.5);
+  
+    // Score Text (truncated to integer)
+    this.add.text(centerX, centerY - 20, `Your Score: ${Math.floor(this.score)}`, {
+      fontSize: '30px',
+      fill: '#ffffff',
+      fontFamily: 'Arial',
+    }).setOrigin(0.5);
+  
+    // Restart Button
+    const button = this.add.text(centerX, centerY + 40, 'Restart', {
+      fontSize: '26px',
+      backgroundColor: '#ffffff',
+      padding: { x: 20, y: 12 },
+      color: '#000000',
+      fontFamily: 'Arial',
+    })
+      .setOrigin(0.5)
+      .setInteractive({ useHandCursor: true })
+      .on('pointerdown', () => {
+        this.scene.start('StartScene'); // Restart the game properly
+      })
+      .on('pointerover', () => button.setStyle({ backgroundColor: '#ddd' }))
+      .on('pointerout', () => button.setStyle({ backgroundColor: '#ffffff' }));
   }
   
   
