@@ -1,4 +1,3 @@
-
 const GAME_CONSTANTS = {
   CUBE_SIZE: 30,
   PLATFORM_WIDTH: 80,
@@ -6,5 +5,6 @@ const GAME_CONSTANTS = {
   BASE_PLATFORM_Y: 570, // 600 - 30 (platform height)
   PLAYER_MOVEMENT_SPEED: 200,
   JUMP_VELOCITY: -300,
-  GRAVITY: 500
+  GRAVITY: 500,
 };
+export default GAME_CONSTANTS;
