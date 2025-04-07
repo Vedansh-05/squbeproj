@@ -1,4 +1,4 @@
-this.floorDetector = this.add.zone(0, 590, 4000, 10);
+this.floorDetector = this.add.zone(0, 590, 1000000, 10);
     this.physics.world.enable(
       this.floorDetector,
       Phaser.Physics.Arcade.STATIC_BODY

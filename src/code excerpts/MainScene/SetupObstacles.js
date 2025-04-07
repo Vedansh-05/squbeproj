@@ -24,10 +24,18 @@ this.physics.add.overlap(
   this
 );
 
-// Spawn obstacles periodically
+// Spawn spikes periodically
 this.time.addEvent({
   delay: 5000,
   callback: this.spawnObstacle,
+  callbackScope: this,
+  loop: true,
+});
+
+// Spawn spotlight periodically
+this.time.addEvent({
+  delay: 7500,
+  callback: this.spawnSpotlight,
   callbackScope: this,
   loop: true,
 });
